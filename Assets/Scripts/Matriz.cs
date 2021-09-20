@@ -92,13 +92,13 @@ public class Matriz : MonoBehaviour
         return c;
     }
 
-    public void MovePlayer(Vector2 dir)
+    public void CheckPos(Vector2 dir)
     {
         _playerPos =new Vector2 (_pc[0].row, _pc[0].col);
-        var newplayerpos = _playerPos + dir;
-        if ((newplayerpos.x>=0 && newplayerpos.x<=9) && (newplayerpos.y>=0 && newplayerpos.y<=9))
+        var newPlayerPos = _playerPos + dir;
+        if ((newPlayerPos.x>=0 && newPlayerPos.x<=9) && (newPlayerPos.y>=0 && newPlayerPos.y<=9))
         {
-            var newPLayerCell = _grid[(int)newplayerpos.x, (int)newplayerpos.y];
+            var newPLayerCell = _grid[(int)newPlayerPos.x, (int)newPlayerPos.y];
             CheckCollision(newPLayerCell);
         }
         else
@@ -107,7 +107,6 @@ public class Matriz : MonoBehaviour
         }
     }
 
-    
     private void CheckCollision(Cell c)
     {
         switch (c.myType)
@@ -118,7 +117,7 @@ public class Matriz : MonoBehaviour
                 break;
             case Cell.MyEnum.Collectable:
                 Move(c);
-                ChoseNewCell();
+                NewCollectable();
                 break;
             case Cell.MyEnum.Collider:
                 ReloadScene();
@@ -128,7 +127,7 @@ public class Matriz : MonoBehaviour
                 break;
         }
     }
-    private void ChoseNewCell()
+    private void NewCollectable()
     {
         var emptyCells = listCells.FindAll(cell => cell.myType == Cell.MyEnum.Empty);
         _rng =  Random.Range(0, emptyCells.Count);

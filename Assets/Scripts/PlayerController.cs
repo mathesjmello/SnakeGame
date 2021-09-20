@@ -36,7 +36,7 @@ namespace DefaultNamespace
         }
         private void ChangePlayerPosition()
         {
-            _m.MovePlayer(direction);
+            _m.CheckPos(direction);
         }
         
     }
