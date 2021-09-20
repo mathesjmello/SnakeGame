@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Matriz : MonoBehaviour
@@ -12,8 +13,8 @@ public class Matriz : MonoBehaviour
     public int obstacles;
     private int _rng;
     public List<Cell> listCells = new List<Cell>();
-    private List<Cell> _displayedList = new List<Cell>();
-    public Cell playerCell;
+    private List<Cell> _pc = new List<Cell>();
+    public int startSize = 0;
     private Vector2 _playerPos;
 
     public enum CellTypes
@@ -21,7 +22,8 @@ public class Matriz : MonoBehaviour
         Empty,
         Player,
         Collectable,
-        Collider
+        Collider,
+        Body
     }
     void Start()
     {
@@ -45,7 +47,6 @@ public class Matriz : MonoBehaviour
                 listCells.Add(cell);
             }
         }
-        _displayedList = listCells;
         SetBoard();
     }
 
@@ -71,27 +72,89 @@ public class Matriz : MonoBehaviour
     
     private void DefinePlayer()
     {
-        playerCell = SelectCell();
-        playerCell.SetType(CellTypes.Player);
+        var head = SelectCell();
+        _pc.Insert(0,head);
+        _pc[0].SetType(CellTypes.Player);
+        for (int i = 1; i < startSize; i++)
+        {
+            var bodyCell = _grid[head.row - i, head.col];
+           _pc.Add(bodyCell);
+           bodyCell.SetType(CellTypes.Body);
+        }
     }
 
     private Cell SelectCell()
     {
-        _rng = Random.Range(0, _displayedList.Count);
-        var chosenCell = _displayedList[_rng];
+        _rng = Random.Range(0, listCells.Count);
+        var chosenCell = listCells[_rng];
         var c = listCells.Find(cell => cell.Id == chosenCell.Id);
-        _displayedList.RemoveAt(_rng);
+        listCells.RemoveAt(_rng);
         return c;
     }
 
     public void MovePlayer(Vector2 dir)
     {
-        playerCell.SetType(CellTypes.Empty);
-        _playerPos =new Vector2 (playerCell.row, playerCell.col);
+        _playerPos =new Vector2 (_pc[0].row, _pc[0].col);
         var newplayerpos = _playerPos + dir;
-        var newPLayerCell = _grid[(int)newplayerpos.x, (int)newplayerpos.y];
-        newPLayerCell.SetType(CellTypes.Player);
-        playerCell = newPLayerCell;
-        
+        if ((newplayerpos.x>=0 && newplayerpos.x<=9) && (newplayerpos.y>=0 && newplayerpos.y<=9))
+        {
+            var newPLayerCell = _grid[(int)newplayerpos.x, (int)newplayerpos.y];
+            CheckCollision(newPLayerCell);
+        }
+        else
+        {
+            ReloadScene();
+        }
+    }
+
+    
+    private void CheckCollision(Cell c)
+    {
+        switch (c.myType)
+        {
+            case Cell.MyEnum.Empty:
+                Move(c);
+                CleanLast();
+                break;
+            case Cell.MyEnum.Collectable:
+                Move(c);
+                ChoseNewCell();
+                break;
+            case Cell.MyEnum.Collider:
+                ReloadScene();
+                break;
+            case Cell.MyEnum.Body:
+                ReloadScene();
+                break;
+        }
+    }
+    private void ChoseNewCell()
+    {
+        var emptyCells = listCells.FindAll(cell => cell.myType == Cell.MyEnum.Empty);
+        _rng =  Random.Range(0, emptyCells.Count);
+        emptyCells[_rng].SetType(CellTypes.Collectable);
+    }
+
+    private void Move(Cell c)
+    {
+        foreach (var cell in _pc)
+        {
+            cell.SetType(CellTypes.Body);
+        }
+        c.SetType(CellTypes.Player);
+        _pc.Insert(0,c);
+    }
+
+    private void CleanLast()
+    {
+        var lastBody = _pc[_pc.Count-1];
+        lastBody.SetType(CellTypes.Empty);
+        _pc.RemoveAt(_pc.Count-1);
+    }
+    void ReloadScene()
+    {
+        StopAllCoroutines();
+        var scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 }

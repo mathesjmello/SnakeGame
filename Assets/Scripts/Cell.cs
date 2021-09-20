@@ -14,7 +14,7 @@ namespace DefaultNamespace
 
         public enum MyEnum
         {
-            Empity,
+            Empty,
             Player,
             Collectable,
             Collider,
@@ -38,7 +38,7 @@ namespace DefaultNamespace
         {
             switch (myType)
             {
-                case MyEnum.Empity:
+                case MyEnum.Empty:
                     _img.color = Color.white;
                     break;
                 case MyEnum.Player:
