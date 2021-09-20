@@ -205,12 +205,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6ca13aaa69f3994b955d91b2fbe65df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
   columns: 10
   rows: 10
   obstacles: 3
   listCells: []
-  playerCell: {fileID: 0}
+  startSize: 0
 --- !u!1 &256238515
 GameObject:
   m_ObjectHideFlags: 0
