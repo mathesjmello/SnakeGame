@@ -17,6 +17,7 @@ public class Matrix : MonoBehaviour
     public int startSize = 0;
     private Vector2 _playerPos;
     private readonly Player _player;
+    private int limitSize = 4;
 
     public Matrix()
     {
@@ -39,7 +40,7 @@ public class Matrix : MonoBehaviour
                 cell.myType = Cell.CellType.Empty;
                 cell.col = i;
                 cell.row = j;
-                cell.Id = id;
+                cell.id = id;
                 id++;
                 _grid[j, i] = cell;
                 _listCells.Add(cell);
@@ -50,44 +51,49 @@ public class Matrix : MonoBehaviour
 
     private void SetBoard()
     {
-        DefineCollider();
         DefinePlayer();
+        DefineCollider();
         DefineCollectable();
     }
-
+    
+    private void DefinePlayer()
+    {
+        var head = _listCells[55];
+        _player._pc.Insert(0,head);
+        _player._pc[0].SetType(Cell.CellType.Player);
+        if (startSize>limitSize || startSize<0)
+        {
+            startSize = 3;
+        }
+        for (int i = 1; i < startSize; i++)
+        {
+            var bodyCell = _grid[head.row - i, head.col];
+            _listCells.RemoveAt(_listCells.Find(cell => cell.id == bodyCell.id).id);
+            _player._pc.Add(bodyCell);
+            bodyCell.SetType(Cell.CellType.Body);
+        }
+    }
+    
     private void DefineCollectable()
     {
-        SelectCell().SetType(Cell.CellType.Collectable);
+        PeekRandomCell().SetType(Cell.CellType.Collectable);
     }
 
     private void DefineCollider()
     {
         for (int i = 0; i < obstacles; i++)
         {
-            SelectCell().SetType(Cell.CellType.Collider);
+            PeekRandomCell().SetType(Cell.CellType.Collider);
         }
     }
     
-    private void DefinePlayer()
-    {
-        var head = SelectCell();
-        _player._pc.Insert(0,head);
-        _player._pc[0].SetType(Cell.CellType.Player);
-        for (int i = 1; i < startSize; i++)
-        {
-            var bodyCell = _grid[head.row - i, head.col];
-            _player._pc.Add(bodyCell);
-           bodyCell.SetType(Cell.CellType.Body);
-        }
-    }
-
-    private Cell SelectCell()
+    
+    private Cell PeekRandomCell()
     {
         _rng = Random.Range(0, _listCells.Count);
         var chosenCell = _listCells[_rng];
-        var c = _listCells.Find(cell => cell.Id == chosenCell.Id);
         _listCells.RemoveAt(_rng);
-        return c;
+        return chosenCell;
     }
 
     public void CheckPos(Vector2 dir)

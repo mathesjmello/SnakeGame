@@ -208,8 +208,7 @@ MonoBehaviour:
   columns: 10
   rows: 10
   obstacles: 3
-  listCells: []
-  startSize: 0
+  startSize: 3
 --- !u!1 &256238515
 GameObject:
   m_ObjectHideFlags: 0
@@ -582,6 +581,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: {x: 0, y: 0}
+  TimeToStart: 2
+  TimeToMove: 0.3
 --- !u!4 &1940191792
 Transform:
   m_ObjectHideFlags: 0

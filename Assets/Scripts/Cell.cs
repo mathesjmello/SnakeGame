@@ -7,7 +7,7 @@ namespace DefaultNamespace
     public class Cell : MonoBehaviour
 
     {
-        public int Id;
+        public int id;
         public int col;
         public int row;
         private Image _img;
