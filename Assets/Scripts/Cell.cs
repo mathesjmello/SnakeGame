@@ -12,7 +12,7 @@ namespace DefaultNamespace
         public int row;
         private Image _img;
 
-        public enum MyEnum
+        public enum CellType
         {
             Empty,
             Player,
@@ -21,16 +21,16 @@ namespace DefaultNamespace
             Body
         }
 
-        public MyEnum myType;
+        public CellType myType;
 
         private void Awake()
         {
             _img = GetComponent<Image>();
         }
 
-        public void SetType(Matriz.CellTypes cellTypes)
+        public void SetType(CellType cellTypes)
         {
-            myType = (MyEnum) cellTypes;
+            myType = cellTypes;
             SetColor();
         }
 
@@ -38,19 +38,19 @@ namespace DefaultNamespace
         {
             switch (myType)
             {
-                case MyEnum.Empty:
+                case CellType.Empty:
                     _img.color = Color.white;
                     break;
-                case MyEnum.Player:
+                case CellType.Player:
                     _img.color = Color.green;
                     break;
-                case MyEnum.Collectable:
+                case CellType.Collectable:
                     _img.color = Color.red;
                     break;
-                case MyEnum.Collider:
+                case CellType.Collider:
                     _img.color = Color.black;
                     break;
-                case MyEnum.Body:
+                case CellType.Body:
                     _img.color = Color.grey;
                     break;
             }

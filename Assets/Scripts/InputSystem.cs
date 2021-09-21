@@ -4,15 +4,17 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class PlayerController: MonoBehaviour
+    public class InputSystem: MonoBehaviour
     {
         [SerializeField] private Vector2 direction;
-        private Matriz _m;
+        public float TimeToStart = 2;
+        public float TimeToMove = 0.3f;
+        private Matrix _m;
         private void Start()
         {
-            _m = FindObjectOfType<Matriz>();
+            _m = FindObjectOfType<Matrix>();
             direction = Vector2.right;
-            InvokeRepeating(nameof(ChangePlayerPosition),2f, 0.5f);
+            InvokeRepeating(nameof(ChangePlayerPosition),TimeToStart, TimeToMove);
         }
 
         private void Update()
