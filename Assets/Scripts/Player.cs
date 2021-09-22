@@ -1,18 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace DefaultNamespace
 {
-    public class Player
+    public class Player: MonoBehaviour
     {
         private Matrix _matrix;
+        private GameManager _gm;
         public List<Cell> _pc = new List<Cell>();
-    
-        public Player(Matrix matrix)
+
+        private void Start()
         {
-            _matrix = matrix;
+            _matrix = Bootstrap.Instance.Matrix;
+            _gm = Bootstrap.Instance.GM;
         }
-    
+
         public void CheckCollision(Cell c)
         {
             switch (c.myType)
@@ -26,10 +30,10 @@ namespace DefaultNamespace
                     _matrix.NewCollectable();
                     break;
                 case Cell.CellType.Collider:
-                    ReloadScene();
+                    _gm.ReloadScene();
                     break;
                 case Cell.CellType.Body:
-                    ReloadScene();
+                    _gm.ReloadScene();
                     break;
             }
         }
@@ -50,11 +54,11 @@ namespace DefaultNamespace
             lastBody.SetType(Cell.CellType.Empty);
             _pc.RemoveAt(_pc.Count-1);
         }
-    
-        public void ReloadScene()
+
+        public Vector2 PlayerPos()
         {
-            var scene = SceneManager.GetActiveScene();
-            SceneManager.LoadScene(scene.name);
+            Vector2 pos = new Vector2(_pc[0].row, _pc[0].col);
+            return pos;
         }
     }
 

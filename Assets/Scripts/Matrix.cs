@@ -1,9 +1,7 @@
-using System.Collections;
+
 using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 
 public class Matrix : MonoBehaviour
@@ -16,16 +14,15 @@ public class Matrix : MonoBehaviour
     private List<Cell> _listCells = new List<Cell>();
     public int startSize = 0;
     private Vector2 _playerPos;
-    private readonly Player _player;
+    private Player _player;
+    private GameManager _gm;
     private int limitSize = 4;
-
-    public Matrix()
-    {
-        _player = new Player(this);
-    }
+    
     
     void Start()
     {
+        _player = Bootstrap.Instance.Player;
+        _gm = Bootstrap.Instance.GM;
         CreateGrid();
     }
     private void CreateGrid()
@@ -87,7 +84,6 @@ public class Matrix : MonoBehaviour
         }
     }
     
-    
     private Cell PeekRandomCell()
     {
         _rng = Random.Range(0, _listCells.Count);
@@ -98,16 +94,16 @@ public class Matrix : MonoBehaviour
 
     public void CheckPos(Vector2 dir)
     {
-        _playerPos =new Vector2 (_player._pc[0].row, _player._pc[0].col);
+        _playerPos = _player.PlayerPos();
         var newPlayerPos = _playerPos + dir;
-        if ((newPlayerPos.x>=0 && newPlayerPos.x<=9) && (newPlayerPos.y>=0 && newPlayerPos.y<=9))
+        if (newPlayerPos.x>=0 && newPlayerPos.x<=9 && newPlayerPos.y>=0 && newPlayerPos.y<=9)
         {
             var newPLayerCell = _grid[(int)newPlayerPos.x, (int)newPlayerPos.y];
             _player.CheckCollision(newPLayerCell);
         }
         else
         {
-            _player.ReloadScene();
+            _gm.ReloadScene();
         }
     }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -12,7 +11,7 @@ namespace DefaultNamespace
         private Matrix _m;
         private void Start()
         {
-            _m = FindObjectOfType<Matrix>();
+            _m = Bootstrap.Instance.Matrix;
             direction = Vector2.right;
             InvokeRepeating(nameof(ChangePlayerPosition),TimeToStart, TimeToMove);
         }
