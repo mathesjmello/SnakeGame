@@ -28,6 +28,13 @@ namespace DefaultNamespace
             _img = GetComponent<Image>();
         }
 
+        public void SetCellInfo(int i, int c, int r)
+        {
+            id = i;
+            col = c;
+            row = r;
+        }
+
         public void SetType(CellType cellTypes)
         {
             myType = cellTypes;

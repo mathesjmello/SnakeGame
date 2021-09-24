@@ -16,7 +16,7 @@ namespace DefaultNamespace
             InvokeRepeating(nameof(ChangePlayerPosition),TimeToStart, TimeToMove);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             if (Input.GetKey("up"))
             {

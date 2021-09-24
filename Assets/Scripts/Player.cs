@@ -9,7 +9,7 @@ namespace DefaultNamespace
     {
         private Matrix _matrix;
         private GameManager _gm;
-        public List<Cell> _pc = new List<Cell>();
+        public List<Cell> pc = new List<Cell>();
 
         private void Start()
         {
@@ -29,10 +29,7 @@ namespace DefaultNamespace
                     Move(c);
                     _matrix.NewCollectable();
                     break;
-                case Cell.CellType.Collider:
-                    _gm.ReloadScene();
-                    break;
-                case Cell.CellType.Body:
+                default:
                     _gm.ReloadScene();
                     break;
             }
@@ -40,25 +37,36 @@ namespace DefaultNamespace
     
         private void Move(Cell c)
         {
-            foreach (var cell in _pc)
+            foreach (var cell in pc)
             {
                 cell.SetType(Cell.CellType.Body);
             }
-            c.SetType(Cell.CellType.Player);
-            _pc.Insert(0,c);
+            InsertHead(c);
         }
     
         private void CleanLast()
         {
-            var lastBody = _pc[_pc.Count-1];
+            var lastBody = pc[pc.Count-1];
             lastBody.SetType(Cell.CellType.Empty);
-            _pc.RemoveAt(_pc.Count-1);
+            pc.RemoveAt(pc.Count-1);
         }
 
         public Vector2 PlayerPos()
         {
-            Vector2 pos = new Vector2(_pc[0].row, _pc[0].col);
+            Vector2 pos = new Vector2(pc[0].row, pc[0].col);
             return pos;
+        }
+
+        public void InsertHead(Cell c)
+        {
+            pc.Insert(0, c);
+            pc[0].SetType(Cell.CellType.Player);
+        }
+
+        public void AddBody(Cell c)
+        {
+            pc.Add(c);
+            c.SetType(Cell.CellType.Body);
         }
     }
 

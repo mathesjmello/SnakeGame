@@ -6,8 +6,8 @@ using UnityEngine;
 
 public class Matrix : MonoBehaviour
 {
-    public int columns = 30;
-    public int rows = 30;
+    public int columns = 10;
+    public int rows = 10;
     private Cell[,] _grid;
     public int obstacles;
     private int _rng;
@@ -17,10 +17,11 @@ public class Matrix : MonoBehaviour
     private Player _player;
     private GameManager _gm;
     private int limitSize = 4;
-    
+    private Rect _rect;
     
     void Start()
     {
+        _rect = new Rect(0, 0, rows, columns);
         _player = Bootstrap.Instance.Player;
         _gm = Bootstrap.Instance.GM;
         CreateGrid();
@@ -29,17 +30,15 @@ public class Matrix : MonoBehaviour
     {
         _grid = new Cell[rows, columns];
         var id = 0;
-        for (int i = 0; i < columns; i++)
+        for (int c = 0; c < columns; c++)
         {
-            for (int j = 0; j < rows; j++)
+            for (int r = 0; r < rows; r++)
             {
                 var cell = Instantiate(Resources.Load<Cell>("cell"),transform);
                 cell.myType = Cell.CellType.Empty;
-                cell.col = i;
-                cell.row = j;
-                cell.id = id;
+                cell.SetCellInfo(id, c , r);
                 id++;
-                _grid[j, i] = cell;
+                _grid[r, c] = cell;
                 _listCells.Add(cell);
             }
         }
@@ -56,8 +55,8 @@ public class Matrix : MonoBehaviour
     private void DefinePlayer()
     {
         var head = _listCells[55];
-        _player._pc.Insert(0,head);
-        _player._pc[0].SetType(Cell.CellType.Player);
+        _listCells.Remove(head);
+        _player.InsertHead(head);
         if (startSize>limitSize || startSize<0)
         {
             startSize = 3;
@@ -65,9 +64,9 @@ public class Matrix : MonoBehaviour
         for (int i = 1; i < startSize; i++)
         {
             var bodyCell = _grid[head.row - i, head.col];
-            _listCells.RemoveAt(_listCells.Find(cell => cell.id == bodyCell.id).id);
-            _player._pc.Add(bodyCell);
-            bodyCell.SetType(Cell.CellType.Body);
+            _listCells.Remove(_listCells.Find(cell => cell.id == bodyCell.id));
+            _player.AddBody(bodyCell);
+           
         }
     }
     
@@ -88,7 +87,7 @@ public class Matrix : MonoBehaviour
     {
         _rng = Random.Range(0, _listCells.Count);
         var chosenCell = _listCells[_rng];
-        _listCells.RemoveAt(_rng);
+        _listCells.Remove(chosenCell);
         return chosenCell;
     }
 
@@ -96,7 +95,7 @@ public class Matrix : MonoBehaviour
     {
         _playerPos = _player.PlayerPos();
         var newPlayerPos = _playerPos + dir;
-        if (newPlayerPos.x>=0 && newPlayerPos.x<=9 && newPlayerPos.y>=0 && newPlayerPos.y<=9)
+        if (_rect.Contains(newPlayerPos))
         {
             var newPLayerCell = _grid[(int)newPlayerPos.x, (int)newPlayerPos.y];
             _player.CheckCollision(newPLayerCell);
