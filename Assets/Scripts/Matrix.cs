@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DefaultNamespace;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class Matrix : MonoBehaviour
@@ -18,9 +19,12 @@ public class Matrix : MonoBehaviour
     private GameManager _gm;
     private int limitSize = 4;
     private Rect _rect;
+    private GridLayoutGroup  _gg;
     
     void Start()
     {
+        _gg = GetComponent<GridLayoutGroup>();
+        _gg.constraintCount = columns;
         _rect = new Rect(0, 0, rows, columns);
         _player = Bootstrap.Instance.Player;
         _gm = Bootstrap.Instance.GM;
